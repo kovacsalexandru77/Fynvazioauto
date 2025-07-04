@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Filminvázió Böngésző</title>
   <style>
     body {
@@ -45,7 +45,7 @@
     }
     .movie:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 32px limegreen;
+      box-shadow: 0 0 32px limegreen; /* Növelt elmosódás */
     }
     .movie img {
       width: 100%;
@@ -102,8 +102,9 @@
     }
     #playerIframe {
       width: 98%;
-      height: 98%;
-      border: 8px solid black;
+      height: 90%;
+      border: 6px solid darkorange;  /* 4 pixel vastag, fekete színű, szilárd keret */
+    }
     }
     #movieDesc {
       margin-top: 15px;
@@ -118,11 +119,12 @@
       border: 4px solid cyan;
       padding: 2px 2px;
       cursor: pointer;
+      border: 2px solid cyan;
       border-radius: 5px;
-      position: fixed;
-      bottom: 10px;
-      left: 98%;
-      transform: translateX(-1%);
+      position: fixed; /* Fix pozíció a képernyő alján */
+      bottom: 10px; /* A képernyő aljától való távolság */
+      left: 98%; /* Középre igazítás */
+      transform: translateX(-1%); /* Tökéletes középre igazítás */
     }
     #loadMoreBtn {
       text-align: center;
@@ -144,48 +146,114 @@
       box-shadow: 0 0 20px cyan;
     }
     header img {
-      width: 200px;
-      height: 40px;
+      width: 200px;  /* Csökkentett szélesség */
+      height: 40;  /* Az arányos magasság megtartása */
       display: block;
       margin: 0 auto;
     }
-    #currentMovieTitle {
-      position: absolute;
-      bottom: 2px;
-      right: 20px;
-      font-size: 10px;
-      color: cyan;
-      z-index: 1000;
-    }
-    #clockOverlay {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 16px;
-      color: cyan;
-      z-index: 10;
-    }
+    .carousel-wrapper {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-track {
+  display: flex;
+  animation: scroll 40s linear infinite;
+  width: max-content;
+}
+
+.slide {
+  flex: 0 0 auto;
+  width: 120px;
+  margin: 0 10px;
+}
+
+.slide img {
+  width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 32px;
+  padding: 10px 16px;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.left-btn {
+  left: 10px;
+}
+
+.right-btn {
+  right: 10px;
+}
   </style>
 </head>
 <body>
   <header>
     <h1><img src="https://ia600504.us.archive.org/9/items/polish-20250421-185417988/Polish_20250421_185417988.png" alt="Polish image"></h1>
     <div id="clock">00:00:00</div>
+    <div class="carousel-wrapper">
+  <button class="nav-btn left-btn" onclick="changeDirection('left')">&#10094;</button>
+  <button class="nav-btn right-btn" onclick="changeDirection('right')">&#10095;</button>
+
+  <div class="carousel-track" id="carouselTrack">
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/fNayx3FYA9AfXxhYdgIUQT3fM8v.jpg" alt="Film 1"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/tVyM1jnAwCZfCyy9WtGUMbawfGk.jpg" alt="Film 2"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/udke9xZBSxe17uxbvKlMFQ8K0CW.jpg" alt="Film 3"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/ujQ6CBayG600cAcmUIlqLFvwAl6.jpg" alt="Film 4"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/blvyc8dFjT2yzV6Pg0wTP03Qhqb.jpg" alt="Film 5"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/vr20UIrV0jxe0ntkLqbPNyIwvAm.jpg" alt="Film 6"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/5EpRU422dCw6KdoEzhuHwNUdCL.jpg" alt="Film 7"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/xBiZvfrWjA5wFTqpWOW6wm8MVcy.jpg" alt="Film 8"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/4iZn7wQNh05BEzsir8t2MPVDNW3.jpg" alt="Film 9"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/uq9qxu4p9zpow1odHHmy3lEaKEu.jpg" alt="Film 10"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/muMh7qYMxB4H7HQVJIouWB7kQge.jpg" alt="Film 11"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/6xtI3JPk8yJCRuDhZrCw0rSaIkc.jpg" alt="Film 12"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/5mIR5b4cv4YqbHDjrdGabXc7jlQ.jpg" alt="Film 13"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/h7danAcmsmYCY21guTxVhkWZGHd.jpg" alt="Film 14"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/aVvw81wGJlDqx9qotbdh53emebR.jpg" alt="Film 15"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/qNAA54nU30jshNmvUGbeg0kCotX.jpg" alt="Film 16"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/wvcIONukapypq7cAF7s0IFfWOK1.jpg" alt="Film 17"></div>
+    <div class="slide"><img src="https://image.tmdb.org/t/p/original/mU9jwhggx117R6Ck6tgBIkXhu5P.jpg" alt="Film 18"></div>
+  </div>
+</div>
   </header>
   <div id="movies"></div>
+
   <div id="loadMoreBtn">
     <button onclick="loadMoreMovies()">Több film betöltése</button>
   </div>
+
   <div id="preloader">
     <div class="loader"></div>
   </div>
+
   <div id="playerModal">
     <div id="closeBtn" onclick="closeModal()">×</div>
-    <div id="clockOverlay"></div>
     <iframe id="playerIframe" allowfullscreen></iframe>
     <div id="movieDesc"></div>
-    <div id="currentMovieTitle" style="display:none;"></div>
   </div>
+
   <script>
     const proxy = "https://api.allorigins.win/get?url=";
     const baseUrl = "https://filminvazio.pro/videa-film/page/";
@@ -210,8 +278,8 @@
           items.forEach(item => {
             const link = item.querySelector("a")?.href;
             const title = item.querySelector("h3")?.textContent.trim();
-            const year = item.querySelector("h3 + span")?.textContent.trim();
             const image = item.querySelector("img")?.src;
+            const year = item.querySelector(".data span")?.textContent.trim();
             const genreElements = item.querySelectorAll(".genres .mta a");
             const genres = Array.from(genreElements).map(a => a.textContent).join(", ");
 
@@ -220,7 +288,7 @@
               div.className = "movie";
               div.innerHTML = `
                 <img src="${image}" alt="${title}">
-                <div class="movie-title">${title} <small>${year || ""}</small><br><small>${genres || ""}</small></div>
+                <div class="movie-title">${title}<br><small>${year || ""}  ${genres || ""}</small></div>
               `;
               div.onclick = () => loadPlayer(link, title, image);
               container.appendChild(div);
@@ -240,16 +308,6 @@
       fetchMovies(currentPage);
     }
 
-    function addAutoplayToSrc(src) {
-      // Ellenőrizzük, hogy van-e már kérdőjel a src-ben
-      if (src.includes("autoplay=1")) return src; // már van autoplay
-      if (src.includes("?")) {
-        return src + "&autoplay=1";
-      } else {
-        return src + "?autoplay=1";
-      }
-    }
-
     function loadPlayer(link, title, image) {
       document.getElementById("preloader").style.display = "flex";
       fetch(proxy + encodeURIComponent(link))
@@ -264,20 +322,16 @@
           if (iframe) {
             let src = iframe.getAttribute("src");
             if (src.startsWith("//")) src = "https:" + src;
-            // autoplay hozzáadása
-            src = addAutoplayToSrc(src);
             document.getElementById("playerIframe").src = src;
             document.getElementById("movieDesc").innerText = title + " – " + desc;
-            document.getElementById("currentMovieTitle").innerText = title;
             document.getElementById("playerModal").classList.add("show");
           } else {
-            alert("Nem találtunk lejátszó iframe-et.");
+            alert("Nem találtunk lejátszót a filmhez.");
           }
           document.getElementById("preloader").style.display = "none";
         })
         .catch(err => {
-          alert("Hiba történt a lejátszó betöltésekor.");
-          console.error(err);
+          console.error("Hiba a lejátszó betöltésekor:", err);
           document.getElementById("preloader").style.display = "none";
         });
     }
@@ -287,20 +341,28 @@
       document.getElementById("playerIframe").src = "";
     }
 
-    // Óra frissítése minden másodpercben
     function updateClock() {
       const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById("clock").textContent = `${h}:${m}:${s}`;
-      document.getElementById("clockOverlay").textContent = `${h}:${m}:${s}`;
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById("clock").textContent = `${hours}:${minutes}:${seconds}`;
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+    const track = document.getElementById('carouselTrack');
+let direction = 'right';
+let speed = 40;
 
-    // Első oldal betöltése induláskor
-    fetchMovies(currentPage);
+function changeDirection(dir) {
+  direction = dir;
+  track.style.animation = 'none';
+  void track.offsetWidth; // újraindítás trükk
+  track.style.animation = `scroll ${speed}s linear infinite`;
+  track.style.animationDirection = dir === 'left' ? 'reverse' : 'normal';
+}
+
+    // Inicializálás
+    setInterval(updateClock, 1000);
+    fetchMovies();
   </script>
 </body>
 </html>
