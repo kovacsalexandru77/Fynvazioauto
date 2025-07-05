@@ -278,8 +278,8 @@
           items.forEach(item => {
             const link = item.querySelector("a")?.href;
             const title = item.querySelector("h3")?.textContent.trim();
+            const year = item.querySelector("h3 + span")?.textContent.trim();
             const image = item.querySelector("img")?.src;
-            const year = item.querySelector(".data span")?.textContent.trim();
             const genreElements = item.querySelectorAll(".genres .mta a");
             const genres = Array.from(genreElements).map(a => a.textContent).join(", ");
 
@@ -288,7 +288,7 @@
               div.className = "movie";
               div.innerHTML = `
                 <img src="${image}" alt="${title}">
-                <div class="movie-title">${title}<br><small>${year || ""}  ${genres || ""}</small></div>
+                <div class="movie-title">${title} <small>${year || ""}</small><br><small>${genres || ""}</small></div>
               `;
               div.onclick = () => loadPlayer(link, title, image);
               container.appendChild(div);
