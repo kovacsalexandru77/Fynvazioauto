@@ -23,11 +23,16 @@
       color: cyan;
     }
     #clock {
-      position: absolute;
+      position: fixed;
       top: 10px;
       right: 20px;
       font-size: 16px;
       color: cyan;
+      background: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      z-index: 10000;
+      font-weight: bold;
     }
     #movies {
       display: grid;
@@ -45,7 +50,15 @@
     }
     .movie:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 32px limegreen; /* Növelt elmosódás */
+      box-shadow: 0 0 32px limegreen;
+      transform: scale(1.05);
+  box-shadow:
+    0 0 12px cyan,
+    0 0 24px cyan,
+    0 0 36px cyan,
+    0 0 48px cyan;
+  border-color: cyan;
+} /* Növelt elmosódás */
     }
     .movie img {
       width: 100%;
@@ -206,9 +219,126 @@
 .right-btn {
   right: 10px;
 }
+#categorySelector {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#categorySelector select {
+  background-color: black;
+  color: cyan;
+  border: 2px solid cyan;
+  border-radius: 6px;
+  padding: 6px;
+  font-size: 14px;
+}
+
+#categorySelector button {
+  background-color: black;
+  color: cyan;
+  border: 2px solid cyan;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+#categorySelector button:hover {
+  background-color: cyan;
+  color: black;
+}
+
+#sidebarMenu {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 250px;
+  height: 100%;
+  background-color: #111;
+  overflow-y: auto;
+  transition: left 0.3s ease;
+  z-index: 10000;
+  padding-top: 60px;
+  box-shadow: 2px 0 12px cyan;
+}
+
+#sidebarMenu ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#sidebarMenu ul li {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+}
+
+#sidebarMenu ul li a {
+  color: cyan;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+#sidebarMenu ul li a:hover {
+  text-decoration: underline;
+}
+#sidebarMenu {
+  left: -260px;
+  transition: left 0.3s ease;
+}
+
+#sidebarMenu.open {
+  left: 0;
+}
   </style>
 </head>
 <body>
+<!-- Kategória választó bal felső sarokban -->
+<div id="categorySelector">
+  <button onclick="toggleSidebar()">☰</button>
+  <select onchange="loadCategory(this.value)">
+  <option disabled selected>Kategória választás</option>
+  <option value="https://filminvazio.pro/online-filmek/vigjatek/">Vígjáték</option>
+  <option value="https://filminvazio.pro/online-filmek/thriller/">Thriller</option>
+  <option value="https://filminvazio.pro/online-filmek/sci-fi/">Sci-fi</option>
+  <option value="https://filminvazio.pro/online-filmek/rejtely/">Rejtély</option>
+  <option value="https://filminvazio.pro/online-filmek/premier-filmek/">Premier</option>
+  <option value="https://filminvazio.pro/online-filmek/misztikus/">Misztikus</option>
+  <option value="https://filminvazio.pro/online-filmek/animacio-filmek-online/">Animáció</option>
+  <option value="https://filminvazio.pro/online-filmek/horror/">Horror</option>
+  <option value="https://filminvazio.pro/online-filmek/drama/">Dráma</option>
+  <option value="https://filminvazio.pro/online-filmek/csaladi/">Családi</option>
+  <option value="https://filminvazio.pro/online-filmek/bunugyi/">Bűnügyi</option>
+  <option value="https://filminvazio.pro/online-filmek/animacios/">Animációs</option>
+  <option value="https://filminvazio.pro/online-filmek/akcio-filmek-online/">Akció</option>
+</select>
+</div>
+
+<!-- Oldalsó menü (sidebar) -->
+<div id="sidebarMenu">
+  <ul>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/vigjatek/'); toggleSidebar(); return false;">Vígjáték</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/thriller/'); toggleSidebar(); return false;">Thriller</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/sci-fi/'); toggleSidebar(); return false;">Sci-fi</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/rejtely/'); toggleSidebar(); return false;">Rejtély</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/premier-filmek/'); toggleSidebar(); return false;">Premier</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/misztikus/'); toggleSidebar(); return false;">Misztikus</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/animacio-filmek-online/'); toggleSidebar(); return false;">Animáció</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/horror/'); toggleSidebar(); return false;">Horror</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/drama/'); toggleSidebar(); return false;">Dráma</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/csaladi/'); toggleSidebar(); return false;">Családi</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/bunugyi/'); toggleSidebar(); return false;">Bűnügyi</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/animacios/'); toggleSidebar(); return false;">Animációs</a></li>
+  <li><a href="#" onclick="loadCategory('https://filminvazio.pro/online-filmek/akcio-filmek-online/'); toggleSidebar(); return false;">Akció</a></li>
+</ul>
+<div style="padding: 12px; text-align: center; color: cyan; font-weight: bold;">
+  Created Sandu
+</div>
+</div>
   <header>
     <h1><img src="https://ia600504.us.archive.org/9/items/polish-20250421-185417988/Polish_20250421_185417988.png" alt="Polish image"></h1>
     <div id="clock">00:00:00</div>
@@ -256,7 +386,7 @@
 
   <script>
     const proxy = "https://api.allorigins.win/get?url=";
-    const baseUrl = "https://filminvazio.pro/videa-film/page/";
+    let baseUrl = "https://filminvazio.pro/videa-film/page/";
     let currentPage = 1;
 
     function fetchMovies(page = 1) {
@@ -363,6 +493,24 @@ function changeDirection(dir) {
     // Inicializálás
     setInterval(updateClock, 1000);
     fetchMovies();
+
+    function loadCategory(categoryUrl) {
+      const container = document.getElementById("movies");
+      container.innerHTML = "";
+      currentPage = 1;
+      baseUrl = categoryUrl + "page/";
+      fetchMovies(currentPage);
+    }
+    function toggleSidebar() {
+  const menu = document.getElementById("sidebarMenu");
+  const isOpen = menu.classList.contains("open");
+
+  if (isOpen) {
+    menu.classList.remove("open");
+  } else {
+    menu.classList.add("open");
+  }
+}
   </script>
 </body>
 </html>
