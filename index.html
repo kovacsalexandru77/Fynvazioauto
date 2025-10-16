@@ -21,19 +21,19 @@
       margin: 0;
       font-size: 28px;
       color: cyan;
-    }
+    }   
     #clock {
-      position: fixed;
-      top: 10px;
-      right: 20px;
-      font-size: 16px;
-      color: cyan;
-      background: none;
-      padding: 5px 10px;
-      border-radius: 6px;
-      z-index: 10000;
-      font-weight: bold;
-    }
+  position: fixed;
+  top: 5px;
+  right: 10px;
+  font-size: 14px;
+  color: cyan;
+  background: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  z-index: 100000; /* Player fölé */
+  font-weight: bold;
+}
     #movies {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -116,7 +116,7 @@
     #playerIframe {
       width: 98%;
       height: 90%;
-      border: 6px solid darkorange;  /* 4 pixel vastag, fekete színű, szilárd keret */
+      border: 2px solid black;  /* 4 pixel vastag, fekete színű, szilárd keret */
     }
     }
     #movieDesc {
@@ -384,133 +384,121 @@
     <div id="movieDesc"></div>
   </div>
 
-  <script>
-    const proxy = "https://api.allorigins.win/get?url=";
-    let baseUrl = "https://filminvazio.pro/videa-film/page/";
-    let currentPage = 1;
+<script>
+const proxy = "https://api.allorigins.win/raw?url=";
+let baseUrl = "https://filminvazio.pro/videa-film/page/";
+let currentPage = 1;
 
-    function fetchMovies(page = 1) {
-      document.getElementById("preloader").style.display = "flex";
-      fetch(proxy + encodeURIComponent(baseUrl + page + "/"))
-        .then(res => {
-          if (!res.ok) throw new Error("Hálózati hiba");
-          return res.json();
-        })
-        .then(data => {
-          const doc = new DOMParser().parseFromString(data.contents, "text/html");
-          const items = doc.querySelectorAll(".item.movies");
-          const container = document.getElementById("movies");
-
-          if (items.length === 0 && page === 1) {
-            container.innerHTML = "<p style='color:red;'>Nem találtunk filmeket.</p>";
-          }
-
-          items.forEach(item => {
-            const link = item.querySelector("a")?.href;
-            const title = item.querySelector("h3")?.textContent.trim();
-            const year = item.querySelector("h3 + span")?.textContent.trim();
-            const image = item.querySelector("img")?.src;
-            const genreElements = item.querySelectorAll(".genres .mta a");
-            const genres = Array.from(genreElements).map(a => a.textContent).join(", ");
-
-            if (link && title && image) {
-              const div = document.createElement("div");
-              div.className = "movie";
-              div.innerHTML = `
-                <img src="${image}" alt="${title}">
-                <div class="movie-title">${title} <small>${year || ""}</small><br><small>${genres || ""}</small></div>
-              `;
-              div.onclick = () => loadPlayer(link, title, image);
-              container.appendChild(div);
-            }
-          });
-
-          document.getElementById("preloader").style.display = "none";
-        })
-        .catch(err => {
-          console.error("Hiba a filmek betöltésekor:", err);
-          document.getElementById("preloader").style.display = "none";
-        });
-    }
-
-    function loadMoreMovies() {
-      currentPage += 1;
-      fetchMovies(currentPage);
-    }
-
-    function loadPlayer(link, title, image) {
-      document.getElementById("preloader").style.display = "flex";
-      fetch(proxy + encodeURIComponent(link))
-        .then(res => {
-          if (!res.ok) throw new Error("Hiba a lejátszó lekérésekor");
-          return res.json();
-        })
-        .then(data => {
-          const doc = new DOMParser().parseFromString(data.contents, "text/html");
-          const iframe = doc.querySelector('iframe[src*="ok.ru"], iframe[src*="videa"], iframe[src*="mozimix"]');
-          const desc = doc.querySelector('meta[name="description"]')?.content || "Nincs leírás.";
-          if (iframe) {
-            let src = iframe.getAttribute("src");
-            if (src.startsWith("//")) src = "https:" + src;
-            document.getElementById("playerIframe").src = src;
-            document.getElementById("movieDesc").innerText = title + " – " + desc;
-            document.getElementById("playerModal").classList.add("show");
-          } else {
-            alert("Nem találtunk lejátszót a filmhez.");
-          }
-          document.getElementById("preloader").style.display = "none";
-        })
-        .catch(err => {
-          console.error("Hiba a lejátszó betöltésekor:", err);
-          document.getElementById("preloader").style.display = "none";
-        });
-    }
-
-    function closeModal() {
-      document.getElementById("playerModal").classList.remove("show");
-      document.getElementById("playerIframe").src = "";
-    }
-
-    function updateClock() {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById("clock").textContent = `${hours}:${minutes}:${seconds}`;
-    }
-    const track = document.getElementById('carouselTrack');
-let direction = 'right';
-let speed = 40;
-
-function changeDirection(dir) {
-  direction = dir;
-  track.style.animation = 'none';
-  void track.offsetWidth; // újraindítás trükk
-  track.style.animation = `scroll ${speed}s linear infinite`;
-  track.style.animationDirection = dir === 'left' ? 'reverse' : 'normal';
-}
-
-    // Inicializálás
-    setInterval(updateClock, 1000);
-    fetchMovies();
-
-    function loadCategory(categoryUrl) {
+function fetchMovies(page = 1) {
+  document.getElementById("preloader").style.display = "flex";
+  fetch(proxy + encodeURIComponent(baseUrl + page + "/"))
+    .then(res => res.text())
+    .then(html => {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const items = doc.querySelectorAll(".item.movies, article");
       const container = document.getElementById("movies");
-      container.innerHTML = "";
-      currentPage = 1;
-      baseUrl = categoryUrl + "page/";
-      fetchMovies(currentPage);
-    }
-    function toggleSidebar() {
-  const menu = document.getElementById("sidebarMenu");
-  const isOpen = menu.classList.contains("open");
 
-  if (isOpen) {
-    menu.classList.remove("open");
-  } else {
-    menu.classList.add("open");
-  }
+      if (items.length === 0 && page === 1) {
+        container.innerHTML = "<p style='color:red;'>Nem találtunk filmeket.</p>";
+      }
+
+      items.forEach(item => {
+        const link = item.querySelector("a")?.href;
+        const title = item.querySelector("h3")?.textContent?.trim() || item.querySelector("a")?.title;
+        const image = item.querySelector("img")?.getAttribute("src");
+        const year = item.querySelector(".year")?.textContent?.trim() || "";
+        const genres = Array.from(item.querySelectorAll(".genres a"))
+          .map(a => a.textContent.trim())
+          .join(", ");
+
+        if (link && title && image) {
+          const div = document.createElement("div");
+          div.className = "movie";
+          div.innerHTML = `
+            <img src="${image}" alt="${title}">
+            <div class="movie-title">${title}<small>${year}</small><br><small>${genres}</small></div>
+          `;
+          div.onclick = () => loadPlayer(link, title, image);
+          container.appendChild(div);
+        }
+      });
+
+      document.getElementById("preloader").style.display = "none";
+    })
+    .catch(err => {
+      console.error("Hiba:", err);
+      document.getElementById("preloader").style.display = "none";
+    });
 }
-  </script>
+
+function loadPlayer(link, title, image) {
+  const preloader = document.getElementById("preloader");
+  const playerModal = document.getElementById("playerModal");
+  const playerIframe = document.getElementById("playerIframe");
+  const descEl = document.getElementById("movieDesc");
+
+  preloader.style.display = "flex";
+  fetch(proxy + encodeURIComponent(link))
+    .then(res => res.text())
+    .then(html => {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const iframe = doc.querySelector('iframe[src*="ok.ru"], iframe[src*="videa"], iframe[src*="mozimix"]');
+      const desc = doc.querySelector('meta[name="description"]')?.content || "Nincs leírás.";
+
+      if (iframe) {
+        let src = iframe.getAttribute("src");
+        if (src.startsWith("//")) src = "https:" + src;
+        if (!src.includes("autoplay=1")) src += (src.includes("?") ? "&" : "?") + "autoplay=1";
+        playerIframe.src = src;
+        descEl.innerText = title + " – " + desc;
+        playerModal.classList.add("show");
+      } else {
+        alert("Nem találtunk lejátszót a filmhez.");
+      }
+      preloader.style.display = "none";
+    })
+    .catch(err => {
+      console.error(err);
+      preloader.style.display = "none";
+      alert("Hiba történt a film betöltésekor.");
+    });
+}
+
+function loadMoreMovies() {
+  currentPage += 1;
+  fetchMovies(currentPage);
+}
+
+function loadCategory(categoryUrl) {
+  const container = document.getElementById("movies");
+  container.innerHTML = "";
+  currentPage = 1;
+  baseUrl = categoryUrl + "page/";
+  fetchMovies(currentPage);
+}
+
+function toggleSidebar() {
+  const menu = document.getElementById("sidebarMenu");
+  menu.classList.toggle("open");
+}
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById("clock").textContent = now.toLocaleTimeString("hu-HU", { hour12: false });
+}
+setInterval(updateClock, 1000);
+updateClock();
+// Player bezárása
+function closeModal() {
+  const playerModal = document.getElementById("playerModal");
+  const playerIframe = document.getElementById("playerIframe");
+  playerModal.classList.remove("show");
+  playerIframe.src = "";
+  const descEl = document.getElementById("movieDesc");
+  descEl.classList.add("fade-out"); // eltűnés bezáráskor is
+}
+
+fetchMovies();
+</script>
 </body>
 </html>
